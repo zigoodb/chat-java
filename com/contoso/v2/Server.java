@@ -57,7 +57,7 @@ public class Server {
             try {
                 //从获取的客户端对象中，获取数据，前提是获取IO流
                 InputStream inputStream = socket.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"utf-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
                 OutputStream outputStream = socket.getOutputStream();
