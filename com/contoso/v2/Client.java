@@ -26,6 +26,9 @@ public class Client {
     }
 
     public void start() {
+        ServerHandler serverHandler = new ServerHandler(socket);
+        serverHandler.start();
+
         try {
             OutputStream outputStream = socket.getOutputStream();
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "utf-8");
@@ -33,23 +36,40 @@ public class Client {
 
             PrintWriter printWriter = new PrintWriter(bufferedWriter, true);
 
-            InputStream inputStream = socket.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 String message = scanner.nextLine();
                 //输出客户端的内容
                 printWriter.println(message);
 
-                //缓冲字符是可以按行读取的
-                String line = bufferedReader.readLine();
-                System.out.println("服务器说：" + line);
             }
-
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    class ServerHandler extends Thread {
+
+        private Socket socket;
+        public ServerHandler(Socket socket){
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                InputStream inputStream = socket.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+              
+                while (true) {
+                    //缓冲字符是可以按行读取的
+                    String line = bufferedReader.readLine();
+                    System.out.println("服务器说：" + line);
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
